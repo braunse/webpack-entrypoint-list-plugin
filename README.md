@@ -1,7 +1,7 @@
 What is this?
 =============
 
-The webpack plugin companion for https://github.com/braunse/SBraun.CallWebpackEntrypoint
+The webpack plugin companion for https://github.com/braunse/CallWebpackEntrypoint
 
 How to enable?
 ==============
