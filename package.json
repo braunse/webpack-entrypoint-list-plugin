@@ -1,0 +1,16 @@
+{
+  "name": "webpack-entrypoint-list-plugin",
+  "version": "0.0.1",
+  "description": "Plugin to generate entrypoint asset lists for SBraun.CallWebpackEntrypoint",
+  "main": "index.js",
+  "repository": "https://github.com/braunse/webpack-entrypoint-list-plugin",
+  "author": "Sebastien Braun",
+  "license": "MPL-2.0",
+  "private": false,
+  "dependencies": {
+    "ssri": "^7.1.0"
+  },
+  "peerDependencies": {
+    "webpack": "^4"
+  }
+}
