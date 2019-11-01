@@ -1,6 +1,6 @@
 {
   "name": "@braunse/webpack-entrypoint-list-plugin",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Plugin to generate entrypoint asset lists for SBraun.CallWebpackEntrypoint",
   "main": "index.js",
   "module": "index.mjs",
