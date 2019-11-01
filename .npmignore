@@ -1,0 +1,5 @@
+# Only need JS in published tarball, no TS necessary
+*.tgz
+*.ts
+!*.d.ts
+tsconfig.json
