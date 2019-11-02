@@ -111,8 +111,6 @@ export class WebpackEntrypointListerPlugin {
       let entrypoints: IEntrypointsData = {};
       let files: IFilesData = {};
       for (let [name, epdata] of stats.compilation.entrypoints.entries()) {
-        console.log(`Endpoint ${name}`, epdata);
-
         const entrypoint: IEntrypointData = {
           stylesheets: [],
           scripts: []
