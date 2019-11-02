@@ -51,11 +51,15 @@ interface IVariantList {
   [name: string]: string;
 }
 
+interface IFileTypes {
+  [name: string]: IFilenameTest;
+}
+
 export interface WebpackEntrypointListerPluginOptions {
   outputDir?: string;
   outputFilename?: string;
-  scriptTest?: IFilenameTest;
-  styleTest?: IFilenameTest;
+  fileTypes?: IFileTypes;
+  additionalFileTypes?: IFileTypes;
   variants?: IVariantList;
 }
 
@@ -91,15 +95,20 @@ interface IVariantData {
 export class WebpackEntrypointListerPlugin {
   outputDir: string | null;
   outputFilename: string;
-  scriptTest: IFilenameTest;
-  styleTest: IFilenameTest;
+  fileTypes: IFileTypes;
   variants: IVariantList;
 
   constructor(options: WebpackEntrypointListerPluginOptions = {}) {
     this.outputDir = options.outputDir || null;
     this.outputFilename = options.outputFilename || "webpack-entrypoints.json";
-    this.scriptTest = options.scriptTest || /\.js$/;
-    this.styleTest = options.styleTest || /\.css$/;
+    this.fileTypes = options.fileTypes || {
+      "application/javascript": /\.js$/,
+      "text/css": /\.css$/,
+      "image/svg+xml": /\.svg$/,
+      "image/png": /\.png$/,
+      "text/plain": /\.(js|css)\.map$/,
+    }
+    Object.assign(this.fileTypes, options.additionalFileTypes || {});
     this.variants = options.variants || {
       br: ".br",
       gzip: ".gz"
@@ -119,15 +128,12 @@ export class WebpackEntrypointListerPlugin {
 
         for (let chunk of epdata.chunks) {
           for (let file of chunk.files) {
-            let fileContentType;
-            if (this.styleTest.test(file)) {
-              entrypoint.stylesheets.push(file);
-              fileContentType = "text/css";
-            } else if (this.scriptTest.test(file)) {
+            let fileContentType = this._determineContentType(file);
+
+            if (fileContentType === "application/javascript") {
               entrypoint.scripts.push(file);
-              fileContentType = "application/javascript";
-            } else {
-              continue;
+            } else if (fileContentType === "text/css") {
+              entrypoint.stylesheets.push(file);
             }
 
             if (files[file] === undefined) {
@@ -177,5 +183,12 @@ export class WebpackEntrypointListerPlugin {
       const outputFile = pathJoin(outputDir, this.outputFilename);
       writeFileSync(outputFile, JSON.stringify({ entrypoints, files }));
     });
+  }
+
+  _determineContentType(file: string): string {
+    for (const [mimeType, test] of Object.entries(this.fileTypes)) {
+      if (test.test(file)) return mimeType;
+    }
+    return "application/octet-stream";
   }
 }
